@@ -542,3 +542,35 @@ axes[1].set_xlabel('epoch')
 axes[1].legend(loc = 'lower right')
 plt.show()
 
+def translate(sentence):
+
+  enr_tokens = eng_vect([sentence])
+  lookup = list(fre_vect.get_vocabulary())
+  start_sent, end_sent = "[start]" , '[end]'
+  output_sent = [start_sent]
+  for i in range(seq_length):
+    vector = fre_vect([''.join(output_sent)])
+    assert vector.shape == (1, seq_length)
+    dec_tokens = vector # Removed slicing here
+    assert dec_tokens.shape == (1, seq_length)
+    pred = model([enr_tokens, dec_tokens])
+    assert pred.shape == (1, seq_length, vocab_size_fr)
+    word = lookup[np.argmax(pred[0, i, :])]
+    output_sent.append(word)
+    if word == end_sent:
+      break
+  return output_sent
+#finally output
+seq_length = 25
+vocab_size_en = 10000
+vocab_size_fre = 20000
+test_count = 20
+
+for n in range(test_count):
+  eng_sent , fre_sent = random.choice(test_pair)
+  trans = translate(eng_sent)
+
+  print(f"Test case : {n}")
+  print(f"English : {eng_sent}")
+  print(f"French : {fre_sent}")
+  print(f"Translated : {' '.join(trans)}")
