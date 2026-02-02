@@ -1,1 +1,1 @@
-# Gene-AI-project
+# Gene-AI-project translator
